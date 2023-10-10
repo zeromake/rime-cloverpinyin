@@ -3,6 +3,13 @@ set -e
 
 SHELLDIR="$(dirname "$(readlink -f "$0")")"
 
+HOST_OS=linux
+if [ "$(uname)" == "Darwin" ];then
+  HOST_OS="osx"
+fi
+if [ "$HOST_OS" == "osx" ];then
+  command -v rime_deployer > /dev/null 2>&1 || export PATH="$PATH:/Library/Input Methods/Squirrel.app/Contents/MacOS/"
+fi
 
 minfreq="${1:-100}"
 
@@ -43,5 +50,10 @@ cp ../rime-emoji/opencc/* opencc
 cp ../cache/opencc/* opencc
 
 echo "开始构建部署二进制"
+# osx 报错 error building config: clover.schema 尝试安装 rime-install prelude
+if [ "$HOST_OS" == "osx" ];then
+rime_deployer --compile clover.schema.yaml . ~/Library/Rime
+else
 rime_deployer --compile clover.schema.yaml . /usr/share/rime-data
+fi
 rm -rf build/*.txt || true
