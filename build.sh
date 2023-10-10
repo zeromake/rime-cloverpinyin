@@ -46,8 +46,8 @@ mv clover.*.yaml THUOCL_*.yaml sogou_new_words.dict.yaml ../data
 # 生成 opencc 目录
 cd ../data
 mkdir -p opencc
-cp ../rime-emoji/opencc/* opencc
-cp ../cache/opencc/* opencc
+../rime-symbols/copyrime-symbols-normal ../rime-emoji/opencc opencc
+../rime-symbols/copyrime-symbols-normal ../cache/opencc opencc
 
 echo "开始构建部署二进制"
 # osx 报错 error building config: clover.schema 尝试安装 rime-install prelude
