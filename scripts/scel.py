@@ -148,7 +148,7 @@ class scel:
         return self.loads(data)
 
 
-def getInternetPopularNewWords():
+def getInternetPopularNewWords(param):
     """
         从搜狗输入法细胞词库官网下载网络流行新词【官方推荐】
         网址是 https://pinyin.sogou.com/dict/detail/index/4
@@ -157,21 +157,42 @@ def getInternetPopularNewWords():
     """
     import requests
     url = "https://pinyin.sogou.com/d/dict/download_cell.php"
-    params = {
-        "id": 4,
-        "name": "网络流行新词【官方推荐】",
-        "f": "detal",
-    }
-    r = requests.get(url, params = params)
+    r = requests.get(url, params = param)
     return r.content
 
 
+popularDicts = {
+    4: {
+        "id": 4,
+        "name": "网络流行新词【官方推荐】",
+        "f": "detal",
+    },
+    15117: {
+        "id": 15117,
+        "name": "计算机词汇大全【官方推荐】",
+        "f": "detal",
+    },
+    75228: {
+        "id": 75228,
+        "name": "开发大神专用词库【官方推荐】",
+        "f": "detal",
+    },
+    80764: {
+        "id": 80764,
+        "name": "Java【官方推荐】",
+        "f": "detal",
+    }
+}
+
 def main(args):
     s = scel()
-
     # 读取 scel
     if args.file is None:
-        s.loads(getInternetPopularNewWords())
+        param = popularDicts.get(args.id)
+        if param is None:
+            return
+        print("下载：{} 词库".format(param["name"]))
+        s.loads(getInternetPopularNewWords(param))
     else:
         s.load(args.file)
 
@@ -184,20 +205,21 @@ def main(args):
     if args.dest is None:
         fp = sys.stdout
     else:
-        fp = open(args.dest, 'w')
-    fp.write(text)
+        fp = open(args.dest, 'ab+')
+    fp.write(text.encode('utf-8'))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description = "搜狗细胞词库（.scel）转换工具，" + \
         '输出格式为 "词语\\t拼音\\t优先级"')
-    parser.add_argument('file', help = \
+    parser.add_argument('--file', help = \
         '搜狗细胞词库文件，格式为 .scel ' + \
         '如果不指定则会自动从官网获取“网络流行新词【官方推荐】.scel”',
-        nargs='?')
-    parser.add_argument('dest', help = \
+        default=None)
+    parser.add_argument('--id', help = 'scel id',type=int, default=4)
+    parser.add_argument('--dest', help = \
         '输出的文件，如果不指定则会输出到标准输出',
-        nargs='?')
+        default=None)
     args = parser.parse_args()
     exit(main(args))
 

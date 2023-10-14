@@ -57,13 +57,22 @@ while read -r file; do
   $PYTHON ../scripts/thuocl2rime.py "$file"
 done < <(find ../THUOCL/data -type f -name 'THUOCL_*.txt')
 cp ../src/sogou_new_words.dict.yaml .
-$PYTHON ../scripts/scel.py >> sogou_new_words.dict.yaml
+$PYTHON ../scripts/scel.py --id=4 --dest="sogou_new_words.dict.yaml"
+WORDS="15117 75228 80764"
+for id in $WORDS; do
+  echo -e "name: sogou_new_words_$id\nversion: \"1\"\nsort: by_weight\n\n..." > sogou_new_words.$id.dict.yaml
+  $PYTHON ../scripts/scel.py --id=$id --dest="sogou_new_words.$id.dict.yaml"
+done
 
 # 生成 data 目录
 mkdir -p ../data
 mkdir -p ../data/$DICT_DIR
 cp ../src/clover.*.yaml ../data
-cp clover.*.yaml THUOCL_*.yaml sogou_new_words.dict.yaml ../data/$DICT_DIR/
+cp clover.*.yaml THUOCL_*.yaml sogou_new_words.dict.yaml sogou_new_words.*.dict.yaml ../data/$DICT_DIR/
+
+for id in $WORDS; do
+  echo "  - clover.dict/sogou_new_words.$id" >> ../data/clover.dict.yaml
+done
 
 # 生成 opencc 目录
 cd ../data
