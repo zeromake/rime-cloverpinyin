@@ -18,7 +18,7 @@ initials_set.add('ng')
 # 修复一些多音字错误
 pypinyin.load_phrases_dict({
     '还珠格格': [['huán'], ['zhū'], ['gé'], ['gé']]
-    })
+})
 
 
 
@@ -244,7 +244,7 @@ def main(args):
             print(self.msg % (count, total))
 
     # 合并 360万 的词库
-    text = open('词典360万（个人整理）.txt', 'r', encoding = 'utf-8').read()
+    text = open(args.dict, 'r', encoding = 'utf-8').read()
     r = generator.mergeDict(text, 1, args.minfreq, 100000,
         PrintProcess('正在合并360万中文词库 (%s/%s)').process)
     print('成功合并360万中文词库 %s 个汉字， %s 个词组。' % r)
@@ -293,33 +293,32 @@ sort: by_weight
 ...
 """ % word_dict_name + generator.getWordDictText()
 
-    parse_dict_text = """
-# Rime 字典
-# encoding: utf-8
-#
-# 该字典生成的项目地址： https://github.com/fkxxyz/clover-dict-gen
-#
-# 所有词组的频率
-# 生成自以下三个项目项目
-#     刘邵博的 360万中文词库+词性+词频
-#     rime 八股文 https://github.com/rime/rime-essay
-#     袖珍简化字拼音 https://github.com/rime/rime-pinyin-simp
-# 注音生成自 pypinyin 项目
-#     https://github.com/mozillazg/python-pinyin
-#
+    if not os.path.exists(parse_dict_name + '.dict.yaml'):
+        parse_dict_text = """
+        # Rime 字典
+        # encoding: utf-8
+        #
+        # 该字典生成的项目地址： https://github.com/fkxxyz/clover-dict-gen
+        #
+        # 所有词组的频率
+        # 生成自以下三个项目项目
+        #     刘邵博的 360万中文词库+词性+词频
+        #     rime 八股文 https://github.com/rime/rime-essay
+        #     袖珍简化字拼音 https://github.com/rime/rime-pinyin-simp
+        # 注音生成自 pypinyin 项目
+        #     https://github.com/mozillazg/python-pinyin
+        #
 
----
-name: %s
-version: "1.0.0"
-sort: by_weight
-...
-""" % parse_dict_name + generator.getParseDictText(
-        10000,
-        PrintProcess('正在取得每个词组的拼音 (%s/%s)').process)
-
-
-    open(word_dict_name + '.dict.yaml', 'w').write(word_dict_text)
-    open(parse_dict_name + '.dict.yaml', 'w').write(parse_dict_text)
+        ---
+        name: %s
+        version: "1.0.0"
+        sort: by_weight
+        ...
+        """ % parse_dict_name + generator.getParseDictText(
+                10000,
+                PrintProcess('正在取得每个词组的拼音 (%s/%s)').process)
+        open(parse_dict_name + '.dict.yaml', 'wb').write(parse_dict_text.encode("utf-8"))
+    open(word_dict_name + '.dict.yaml', 'wb').write(word_dict_text.encode("utf-8"))
     return 0
 
 
@@ -329,6 +328,7 @@ if __name__ == '__main__':
         help='Specify the minimum frequency, ' + \
         'phrases that are less than this frequency will be filtered out',
         type=int, default=100)
+    parser.add_argument('--dict', '-d', help='dict', type=str, default="../chinese-dictionary-3.6million/词典360万（个人整理）.txt")
     args = parser.parse_args()
     main(args)
 

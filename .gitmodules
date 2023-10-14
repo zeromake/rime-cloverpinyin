@@ -13,9 +13,3 @@
 [submodule "rime-emoji"]
 	path = rime-emoji
 	url = https://github.com/rime/rime-emoji.git
-[submodule "rime-symbols"]
-	path = rime-symbols
-	url = https://github.com/zeromake/rime-symbols.git
-[submodule "libscel"]
-	path = libscel
-	url = https://github.com/fkxxyz/libscel.git

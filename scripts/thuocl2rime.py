@@ -16,7 +16,7 @@ def main(args):
         return 1
 
     if args.dest is None:
-        file_name = args.src[args.src.rfind(os.sep)+1:]
+        file_name = args.src[args.src.rfind('/')+1:]
         dot_pos = file_name.rfind('.')
         if dot_pos == -1:
             args.dest = file_name + '.dict.yaml'
@@ -26,7 +26,7 @@ def main(args):
     if not args.dest.endswith('.dict.yaml'):
         sys.stderr.out("目标文件需要以 .dict.yaml 结尾")
         return 2
-    name = args.dest[args.dest.rfind(os.sep)+1:][:-10]
+    name = args.dest[args.dest.rfind('/')+1:][:-10]
 
     result = """name: %s
 version: "1"
@@ -41,23 +41,23 @@ sort: by_weight
             if ord(c) not in pypinyin.pinyin_dict.pinyin_dict:
                 return False
         return True
+    with open(args.src, 'r', encoding = 'utf-8') as f:
+        text = f.read()
+        for v in map(lambda x:x.split(), text.split('\n')):
+            if len(v) == 2:
+                # 检查该词组的每个字必须为汉字
+                if not checkPhrase(v[0]):
+                    continue
 
-    text = open(args.src).read()
-    for v in map(lambda x:x.split(), text.split('\n')):
-        if len(v) == 2:
-            # 检查该词组的每个字必须为汉字
-            if not checkPhrase(v[0]):
-                continue
-
-            # 获取该词组的拼音
-            pinyin = pypinyin.lazy_pinyin(v[0])
-            for p in pinyin:
-                if p in initials_set:  # 拼音不能只包含声母
-                    break
-            else:
-                result += v[0] + '\t' + ' '.join(pinyin) + '\t' + v[1] + '\n'
-
-    open(args.dest, 'w').write(result)
+                # 获取该词组的拼音
+                pinyin = pypinyin.lazy_pinyin(v[0])
+                for p in pinyin:
+                    if p in initials_set:  # 拼音不能只包含声母
+                        break
+                else:
+                    result += v[0] + '\t' + ' '.join(pinyin) + '\t' + v[1] + '\n'
+    with open(args.dest, 'wb') as f:
+        f.write(result.encode('utf-8'))
     return 0
 
 if __name__ == '__main__':

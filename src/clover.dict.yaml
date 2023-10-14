@@ -4,18 +4,17 @@ version: "1"
 sort: by_weight
 
 import_tables:
-  - clover.base
-  - clover.phrase
-  - THUOCL_animal
-  - THUOCL_caijing
-  - THUOCL_car
-  - THUOCL_chengyu
-  - THUOCL_diming
-  - THUOCL_food
-  - THUOCL_IT
-  - THUOCL_law
-  - THUOCL_lishimingren
-  - THUOCL_medical
-  - THUOCL_poem
-  - sogou_new_words
-
+  - clover.dict/clover.base
+  - clover.dict/clover.phrase
+  - clover.dict/sogou_new_words
+  - clover.dict/THUOCL_animal
+  - clover.dict/THUOCL_caijing
+  - clover.dict/THUOCL_car
+  - clover.dict/THUOCL_chengyu
+  - clover.dict/THUOCL_diming
+  - clover.dict/THUOCL_food
+  - clover.dict/THUOCL_IT
+  - clover.dict/THUOCL_law
+  - clover.dict/THUOCL_lishimingren
+  - clover.dict/THUOCL_medical
+  - clover.dict/THUOCL_poem
