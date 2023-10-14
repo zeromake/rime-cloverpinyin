@@ -4,8 +4,9 @@ set -e
 ver="$1"
 
 cd data
-rm -rf clover.schema-$ver.zip
-rm -rf clover.schema-build-$ver.zip
-zip -5 clover.schema-$ver.zip *.yaml opencc/*
-zip -5 clover.schema-build-$ver.zip *.yaml opencc/* build/*
-
+rm -rf clover.schema-$ver.tar.gz
+rm -rf clover.schema-build-$ver.tar.gz
+tar -zcvf clover.schema-$ver.tar.gz *.yaml opencc/*
+if [ -z "build" ]; then
+    tar -zcvf clover.schema-build-$ver.tar.gz *.yaml opencc/* build/*
+fi
